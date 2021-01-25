@@ -4,20 +4,22 @@ import dev.konstantin.dao.UserServiceDaoImpl;
 import dev.konstantin.entity.UserInfo;
 import dev.konstantin.exceptions.IncorrectUserInfoException;
 import dev.konstantin.dao.InMemoryUserServiceDao;
-import org.junit.Assert;
-import org.junit.Test;
+//import org.junit.Assert;
+//import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.util.Assert;
 
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class UserServiceTestDAO {
+public class UserServiceDaoTest {
 
-  private UserServiceDaoImpl userServiceDaoImpl = new UserServiceDaoImpl(new InMemoryUserServiceDao());
+  private final UserServiceDaoImpl userServiceDaoImpl = new UserServiceDaoImpl(new InMemoryUserServiceDao());
 
   private static Stream<Arguments> provideToStringsForSaveUserTest() {
     return Stream.of(
@@ -40,7 +42,7 @@ public class UserServiceTestDAO {
 
     UserInfo userInfo = userServiceDaoImpl.findByPesel(pesel);
 
-    Assert.assertEquals(userInfo.getEmail(), email);
+    Assertions.assertEquals(userInfo.getEmail(), email);
     //Assert.assertEquals(10, userServiceDAO.getSize());
 
     Assertions.assertEquals(pesel, userInfo.getPesel());

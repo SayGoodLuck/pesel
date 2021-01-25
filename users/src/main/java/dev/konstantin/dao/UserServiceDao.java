@@ -4,7 +4,7 @@ import dev.konstantin.entity.UserInfo;
 
 public interface UserServiceDao {
 
-    UserInfo findByEmail(String email);
+  UserInfo findByEmail(String email);
 
-    UserInfo findByPesel(String pesel);
+  UserInfo findByPesel(String pesel);
 }

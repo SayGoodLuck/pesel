@@ -1,7 +1,9 @@
 package dev.konstantin.config;
 
 import dev.konstantin.dao.InMemoryUserServiceDao;
+import dev.konstantin.dao.UserServiceDao;
 import dev.konstantin.dao.UserServiceDaoImpl;
+import dev.konstantin.repository.UserRepository;
 import dev.konstantin.service.PeselService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +17,7 @@ public class SpringConfig {
   }
 
   @Bean
-  public UserServiceDaoImpl userServiceDAO() {
+  public UserServiceDao userServiceDao() {
     return new UserServiceDaoImpl(inMemoryUserServiceDao());
   }
 
@@ -23,4 +25,6 @@ public class SpringConfig {
   public InMemoryUserServiceDao inMemoryUserServiceDao() {
     return new InMemoryUserServiceDao();
   }
+
+
 }

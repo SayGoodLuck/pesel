@@ -4,7 +4,9 @@ import dev.konstantin.config.PeselInfo;
 import dev.konstantin.config.Gender;
 import dev.konstantin.config.IncorrectPeselException;
 import dev.konstantin.service.PeselService;
-import org.junit.Assert;
+//import org.junit.Assert;
+//import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -36,10 +38,13 @@ class PeselServiceTest {
   void decodeTest(String pesel, LocalDate expectedBirthday, Gender gender) {
     PeselInfo peselInfo = peselService.decode(pesel);
 
-    Assert.assertEquals(expectedBirthday, peselInfo.getBirthday());
-    Assert.assertEquals(gender, peselInfo.getGender());
-    Assert.assertEquals(pesel, peselInfo.getPesel());
+    //Assertions.assertEquals();
+    Assertions.assertEquals(expectedBirthday, peselInfo.getBirthday());
+    Assertions.assertEquals(gender, peselInfo.getGender());
+    Assertions.assertEquals(pesel, peselInfo.getPesel());
   }
+
+
 
   private static Stream<Arguments> provideStringsForExceptionWhenPeselRunWithNo11Digits() {
     return Stream.of(
@@ -55,7 +60,7 @@ class PeselServiceTest {
         Arguments.of("5465433645"));
   }
 
-  @ParameterizedTest()
+  @ParameterizedTest
   @MethodSource("provideStringsForExceptionWhenPeselRunWithNo11Digits")
   void exceptionWhenPeselRunWithNo11Digits(String pesel) {
     assertThatThrownBy(
@@ -94,18 +99,18 @@ class PeselServiceTest {
   private static Stream<Arguments> provideStringsForCheckInvalidCheckSum() {
     return Stream.of(
         Arguments.of("88020344589"),
-        Arguments.of("77092436727"),
-        Arguments.of("56122837551"),
-        Arguments.of("96272717599"),
-        Arguments.of("15811057108"),
-        Arguments.of("15441089906"),
-        Arguments.of("62713026105"),
-        Arguments.of("48091468466"),
-        Arguments.of("78031327367"),
-        Arguments.of("98070971714"));
+            Arguments.of("77092436727"),
+            Arguments.of("56122837551"),
+            Arguments.of("96272717599"),
+            Arguments.of("15811057108"),
+            Arguments.of("15441089906"),
+            Arguments.of("62713026105"),
+            Arguments.of("48091468466"),
+            Arguments.of("78031327367"),
+            Arguments.of("98070971714"));
   }
 
-  @ParameterizedTest()
+  @ParameterizedTest
   @MethodSource("provideStringsForCheckInvalidCheckSum")
   void checkInvalidCheckSum(String pesel) {
     assertThatThrownBy(

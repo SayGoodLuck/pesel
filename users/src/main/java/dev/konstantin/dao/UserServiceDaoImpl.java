@@ -5,29 +5,31 @@ import dev.konstantin.entity.UserInfo;
 import dev.konstantin.exceptions.IncorrectUserInfoException;
 import dev.konstantin.repository.UserRepository;
 import dev.konstantin.service.PeselService;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 @Service
 public class UserServiceDaoImpl implements UserServiceDao {
 
-  @Autowired
-  private PeselService peselService;
-  @Autowired
-  private UserRepository userRepository;
+  @Autowired private PeselService peselService;
 
+  private  UserRepository userRepository;
+
+  @Autowired
   private InMemoryUserServiceDao inMemoryUserServiceDao;
-  /*public UserServiceDaoImpl(UserRepository userRepository) {
+
+  public UserServiceDaoImpl(){}
+  //todo 2 конструктора?
+  public UserServiceDaoImpl(UserRepository userRepository) {
     this.userRepository = userRepository;
-  }*/
+  }
 
   public UserServiceDaoImpl(InMemoryUserServiceDao inMemoryUserServiceDao) {
     this.inMemoryUserServiceDao = inMemoryUserServiceDao;
   }
-
 
   public boolean saveUser(String pesel, String name, String surname, String email) {
 
@@ -60,9 +62,9 @@ public class UserServiceDaoImpl implements UserServiceDao {
     return userRepository.findByPesel(pesel);
   }
 
-  /*public int getSize() {
-    return userRepository.getSize();
-  }*/
+  public List<UserInfo> findAll() {
+    return userRepository.findAll();
+  }
 
   // if string is ok returns true
   private boolean isStringContainOnlyAlphabetic(String string) {
