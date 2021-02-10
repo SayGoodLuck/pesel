@@ -20,7 +20,7 @@ public class UserController {
     return "greeting";
   }
 
-  @GetMapping
+  @GetMapping("/")
   public String getIndex() {
     return "index";
   }

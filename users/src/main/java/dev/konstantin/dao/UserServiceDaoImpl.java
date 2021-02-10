@@ -8,27 +8,19 @@ import dev.konstantin.service.PeselService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.regex.Pattern;
 
 @Service
-public class UserServiceDaoImpl implements UserServiceDao {
+public class UserServiceDaoImpl {
 
-  @Autowired private PeselService peselService;
+  private PeselService peselService = new PeselService();
 
-  private  UserRepository userRepository;
+  private UserRepository userRepository;
 
-  @Autowired
-  private InMemoryUserServiceDao inMemoryUserServiceDao;
-
-  public UserServiceDaoImpl(){}
-  //todo 2 конструктора?
   public UserServiceDaoImpl(UserRepository userRepository) {
     this.userRepository = userRepository;
-  }
-
-  public UserServiceDaoImpl(InMemoryUserServiceDao inMemoryUserServiceDao) {
-    this.inMemoryUserServiceDao = inMemoryUserServiceDao;
   }
 
   public boolean saveUser(String pesel, String name, String surname, String email) {

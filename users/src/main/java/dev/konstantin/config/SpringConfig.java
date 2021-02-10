@@ -16,15 +16,13 @@ public class SpringConfig {
     return new PeselService();
   }
 
-  @Bean
-  public UserServiceDao userServiceDao() {
-    return new UserServiceDaoImpl(inMemoryUserServiceDao());
-  }
-
-  @Bean
-  public InMemoryUserServiceDao inMemoryUserServiceDao() {
-    return new InMemoryUserServiceDao();
-  }
-
-
+//  @Bean
+//  public UserServiceDaoImpl userServiceDaoImpl() {
+//    return UserServiceDaoImpl(new InMemoryUserServiceDao());
+//  }
+//
+//  @Bean
+//  public InMemoryUserServiceDao inMemoryUserServiceDao() {
+//    return new InMemoryUserServiceDao();
+//  }
 }
