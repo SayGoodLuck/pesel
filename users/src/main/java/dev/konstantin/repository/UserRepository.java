@@ -17,11 +17,11 @@ public interface UserRepository extends Repository {
 
   void deleteById(String id);
 
-  UserInfo findById(String pesel);
+  UserInfo findById(String id);
 
   UserInfo findByEmail(String email);
 
   List<UserInfo> findAll();
 
-  boolean isUserExist(String pesel);
+  boolean isUserExist(String id);
 }

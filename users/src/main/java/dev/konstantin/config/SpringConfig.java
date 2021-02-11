@@ -1,11 +1,13 @@
 package dev.konstantin.config;
 
-import dev.konstantin.dao.InMemoryUserServiceDao;
-import dev.konstantin.dao.UserServiceDao;
-import dev.konstantin.repository.UserRepository;
 import dev.konstantin.service.PeselService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+import javax.sql.DataSource;
+
+import static dev.konstantin.config.DBConfig.*;
 
 @Configuration
 public class SpringConfig {
@@ -15,13 +17,15 @@ public class SpringConfig {
     return new PeselService();
   }
 
-//  @Bean
-//  public UserServiceDaoImpl userServiceDaoImpl() {
-//    return UserServiceDaoImpl(new InMemoryUserServiceDao());
-//  }
-//
-//  @Bean
-//  public InMemoryUserServiceDao inMemoryUserServiceDao() {
-//    return new InMemoryUserServiceDao();
-//  }
+  @Bean
+  public DataSource postgresDataSource() {
+    DriverManagerDataSource dataSource = new DriverManagerDataSource();
+    dataSource.setDriverClassName(dbDriver);
+    dataSource.setUsername(dbUser);
+    dataSource.setPassword(dbPassword);
+    dataSource.setUrl(dbUrl);
+    return dataSource;
+  }
+  @Bean
+  public void setDataSource
 }

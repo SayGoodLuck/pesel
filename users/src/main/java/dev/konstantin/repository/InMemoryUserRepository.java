@@ -1,6 +1,7 @@
 package dev.konstantin.repository;
 
 import dev.konstantin.entity.UserInfo;
+import dev.konstantin.exceptions.IncorrectUserInfoException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ public class InMemoryUserRepository implements UserRepository {
 
   public List<UserInfo> findAll() {
     if (map.isEmpty()) {
-      return null;
+      throw new IncorrectUserInfoException("no users found");
     }
     List<UserInfo> users = new ArrayList<>();
     for (UserInfo user : map.values()) {
@@ -22,9 +23,8 @@ public class InMemoryUserRepository implements UserRepository {
     return users;
   }
 
-
-  public boolean isUserExist(String pesel) {
-    if(map.get(pesel) != null) {
+  public boolean isUserExist(String id) {
+    if (map.get(id) != null) {
       return true;
     }
     return false;
@@ -32,15 +32,16 @@ public class InMemoryUserRepository implements UserRepository {
 
   public void save(UserInfo userInfo) {
     Objects.requireNonNull(userInfo);
-    map.put(userInfo.getPesel(), userInfo);
+    map.put(userInfo.getId(), userInfo);
   }
 
-  public void deleteById(String pesel) {
-    map.remove(pesel);
+  public void deleteById(String id) {
+    if (isUserExist(id)) {
+      map.remove(id);
+    }
   }
 
   public UserInfo findByEmail(String email) {
-
     for (String keys : map.keySet()) {
       if (map.get(keys).getEmail() == email) {
         return map.get(keys);
@@ -49,7 +50,10 @@ public class InMemoryUserRepository implements UserRepository {
     return null;
   }
 
-  public UserInfo findById(String pesel) {
-    return map.get(pesel);
+  public UserInfo findById(String id) {
+    if (isUserExist(id)) {
+      return map.get(id);
+    }
+    return null;
   }
 }

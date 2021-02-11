@@ -23,13 +23,13 @@
 //    this.userRepository = userRepository;
 //  }
 //
-//  public boolean saveUser(String pesel, String name, String surname, String email) {
+//  public boolean saveUser(String pesel, String name, String lastname, String email) {
 //
 //    PeselInfo peselInfo = peselService.decode(pesel);
 //
-//    if (!isStringContainOnlyAlphabetic(name) && !isStringContainOnlyAlphabetic(surname)) {
+//    if (!isStringContainOnlyAlphabetic(name) && !isStringContainOnlyAlphabetic(lastname)) {
 //      throw new IncorrectUserInfoException(
-//          "Name or surname contains another symbols. Please, enter only letters!");
+//          "Name or lastname contains another symbols. Please, enter only letters!");
 //    }
 //
 //    if (!emailChecker(email)) {
@@ -37,7 +37,7 @@
 //    }
 //
 //    userRepository.save(
-//        new UserInfo(pesel, name, surname, email, peselInfo.getGender(), peselInfo.getBirthday()));
+//        new UserInfo(pesel, name, lastname, email, peselInfo.getGender(), peselInfo.getBirthday()));
 //    return true;
 //  }
 //

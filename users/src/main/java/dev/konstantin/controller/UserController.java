@@ -34,11 +34,11 @@
 //  public String newUser(
 //      @RequestParam(name = "id") String id,
 //      @RequestParam(name = "name") String name,
-//      @RequestParam(name = "surname") String surname,
+//      @RequestParam(name = "lastname") String lastname,
 //      @RequestParam(name = "email") String email,
 //      Model model) {
 //    model.addAttribute("name", name);
-//    userServiceDaoImpl.saveUser(id, name, surname, email);
+//    userServiceDaoImpl.saveUser(id, name, lastname, email);
 //    return "redirect:/api/index";
 //  }
 //}

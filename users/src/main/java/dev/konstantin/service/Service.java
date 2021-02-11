@@ -16,7 +16,7 @@ public class Service {
   }
 
   // if email is ok returns true
-  protected boolean emailChecker(String email) {
+  protected boolean isEmailValid(String email) {
     return Pattern.matches("^(.+)@(.+)$", email);
     // "^(.+)@(.+)$" simpliest
     // "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z]{2,6}$"

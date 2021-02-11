@@ -15,7 +15,7 @@ public class InMemoryUserServiceDao {
 
   public boolean save(UserInfo userInfo) {
     Objects.requireNonNull(userInfo);
-    map.put(userInfo.getPesel(), userInfo);
+    map.put(userInfo.getId(), userInfo);
     return true;
   }
 

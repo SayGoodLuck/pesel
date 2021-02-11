@@ -14,8 +14,6 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-//import org.junit.Test;
-
 public class UserServiceTest {
 
   private UserServiceImpl userServiceImpl = new UserServiceImpl(new InMemoryUserRepository());
@@ -41,22 +39,10 @@ public class UserServiceTest {
 
     UserInfo userInfo = userServiceImpl.findUserByPesel(pesel);
 
-    Assertions.assertEquals(pesel, userInfo.getPesel());
+    Assertions.assertEquals(pesel, userInfo.getId());
     Assertions.assertEquals(name, userInfo.getName());
-    Assertions.assertEquals(lastname, userInfo.getSurname());
+    Assertions.assertEquals(lastname, userInfo.getLastname());
     Assertions.assertEquals(email, userInfo.getEmail());
-  }
-
-  private static Stream<Arguments> provideStringsToUpdateUserTest() {
-    return Stream.of(
-        Arguments.of(
-            "64040475529",
-            "Eliza",
-            "Woźniak",
-            "pahtsham.saleem@gmailvn.net",
-            "Monika",
-            "Poźniak",
-            "pahtsham.saleem@gmail.net"));
   }
 
   private static Stream<Arguments> provideStringsToRunWhenStringContainsNotAlphabetic() {
@@ -90,7 +76,6 @@ public class UserServiceTest {
         Arguments.of("89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowskigmail.com"),
         Arguments.of("98101975671", "Klaudiusz", "Krupa", "1458374557"),
         Arguments.of("55121697314", "Alfred", "Wojciechowski", "233inbox"),
-        Arguments.of("87122717751", "Martin", "Wysocki", ""),
         Arguments.of("93072493739", "Mieszko", "Szewczyk", "@yahoo.com"),
         Arguments.of("78010292461", "Krystyna", "Krawczyk", "@"),
         Arguments.of("93121247429", "Dorota", "Wysocka", "@JFDSKFBS"),
@@ -110,12 +95,33 @@ public class UserServiceTest {
         .hasMessageContaining("Email is invalid. Try again");
   }
 
+  private static Stream<Arguments> provideStringsToRunsaveWithoutField() {
+    return Stream.of(
+        Arguments.of("", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com"),
+        Arguments.of("98101975671", "", "Krupa", "Klaudiusz.Krupa@rambler.com"),
+        Arguments.of("55121697314", "Alfred", "", "Alfred.Wojciechowski@inbox.ru"),
+        Arguments.of("", "", "", ""),
+        Arguments.of("87122717751", "Martin", "Wysocki", ""));
+  }
+
+  @ParameterizedTest
+  @MethodSource("provideStringsToRunsaveWithoutField")
+  void saveWithoutField(String pesel, String name, String lastname, String email) {
+    assertThatThrownBy(
+            () -> {
+              userServiceImpl.saveUser(pesel, name, lastname, email);
+            })
+        .isInstanceOf(IncorrectUserInfoException.class)
+        .hasMessageContaining("all fields are required");
+  }
+
   @Test
   void getUserByIdTest() {
-    userServiceImpl.saveUser("89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com");
+    userServiceImpl.saveUser(
+        "89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com");
     UserInfo userInfo = userServiceImpl.findUserByPesel("89112275656");
     Assertions.assertEquals("Kazimierz", userInfo.getName());
-    Assertions.assertEquals("89112275656", userInfo.getPesel());
+    Assertions.assertEquals("89112275656", userInfo.getId());
     Assertions.assertEquals("Kazimierz.Ostrowski@gmail.com", userInfo.getEmail());
   }
 
@@ -123,35 +129,35 @@ public class UserServiceTest {
   void addDublicatedUser() {
     assertThatThrownBy(
             () -> {
-              userServiceImpl.saveUser("89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com");
-              userServiceImpl.saveUser("89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com");
-            }).isInstanceOf(IncorrectUserInfoException.class).hasMessageContaining("User already exists");
-
+              userServiceImpl.saveUser(
+                  "89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com");
+              userServiceImpl.saveUser(
+                  "89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com");
+            })
+        .isInstanceOf(IncorrectUserInfoException.class)
+        .hasMessageContaining("User already exists");
   }
+
   @Test
   void getUserByEmailTest() {
-    userServiceImpl.saveUser("89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com");
+    userServiceImpl.saveUser(
+        "89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com");
     UserInfo userInfo = userServiceImpl.findUserByEmail("Kazimierz.Ostrowski@gmail.com");
     Assertions.assertEquals("Kazimierz", userInfo.getName());
-    Assertions.assertEquals("89112275656", userInfo.getPesel());
+    Assertions.assertEquals("89112275656", userInfo.getId());
     Assertions.assertEquals("Kazimierz.Ostrowski@gmail.com", userInfo.getEmail());
   }
 
   @Test
-  public void addUserTest() {
-    userServiceImpl.saveUser("89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com");
-    //Assertions.assertTrue(isUserCreated);
-  }
-
-  @org.junit.jupiter.api.Test
-  public void editUserTest() {
-    //todo
-  }
-
-  @Test
   public void deleteUserTest() {
-    userServiceImpl.saveUser("89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com");
+    userServiceImpl.saveUser(
+        "89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com");
     userServiceImpl.deleteUser("89112275656");
-    //Assertions.assertTrue(isUserDeleted);
+    assertThatThrownBy(
+            () -> {
+              userServiceImpl.findUserByPesel("89112275656");
+            })
+        .isInstanceOf(IncorrectUserInfoException.class)
+        .hasMessageContaining("no user found");
   }
 }

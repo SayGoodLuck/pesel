@@ -7,7 +7,6 @@ import dev.konstantin.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 @Service
@@ -22,7 +21,10 @@ public class UserServiceImpl extends dev.konstantin.service.Service implements U
 
   public void saveUser(String pesel, String name, String lastname, String email) {
 
-    if (userRepository.isUserExist(pesel)) {
+    if (pesel == "" || name == "" || lastname == "" || email == "") {
+      throw new IncorrectUserInfoException("all fields are required");
+    }
+    if (isUserExist(pesel)) {
       throw new IncorrectUserInfoException("User already exists");
     }
 
@@ -33,7 +35,7 @@ public class UserServiceImpl extends dev.konstantin.service.Service implements U
           "Name or lastname contains another symbols. Please, enter only letters!");
     }
 
-    if (!emailChecker(email)) {
+    if (!isEmailValid(email)) {
       throw new IncorrectUserInfoException("Email is invalid. Try again");
     }
 
@@ -42,19 +44,23 @@ public class UserServiceImpl extends dev.konstantin.service.Service implements U
   }
 
   public void deleteUser(String pesel) {
-    if (!userRepository.isUserExist(pesel)) {
+    if (!isUserExist(pesel)) {
       throw new IncorrectUserInfoException("user is not found");
     }
     userRepository.deleteById(pesel);
   }
 
   public UserInfo findUserByEmail(String email) {
-    return userRepository.findByEmail(email);
+    UserInfo userInfo = userRepository.findByEmail(email);
+    if (userInfo == null) {
+      throw new IncorrectUserInfoException("no user found");
+    }
+    return userInfo;
   }
 
   public UserInfo findUserByPesel(String pesel) {
-    if (pesel == null) {
-      return null;
+    if (!isUserExist(pesel)) {
+      throw new IncorrectUserInfoException("no user found");
     }
     return userRepository.findById(pesel);
   }
@@ -62,8 +68,15 @@ public class UserServiceImpl extends dev.konstantin.service.Service implements U
   public List<UserInfo> getAllUsers() {
     List<UserInfo> users = userRepository.findAll();
     if (users.isEmpty()) {
-      return null;
+      throw new IncorrectUserInfoException("no users found");
     }
     return users;
+  }
+
+  public boolean isUserExist(String pesel) {
+    if (userRepository.findById(pesel) != null) {
+      return true;
+    }
+    return false;
   }
 }
