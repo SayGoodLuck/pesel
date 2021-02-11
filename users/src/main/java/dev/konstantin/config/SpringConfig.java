@@ -2,7 +2,6 @@ package dev.konstantin.config;
 
 import dev.konstantin.dao.InMemoryUserServiceDao;
 import dev.konstantin.dao.UserServiceDao;
-import dev.konstantin.dao.UserServiceDaoImpl;
 import dev.konstantin.repository.UserRepository;
 import dev.konstantin.service.PeselService;
 import org.springframework.context.annotation.Bean;

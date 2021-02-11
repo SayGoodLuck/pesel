@@ -1,27 +1,24 @@
 package dev.konstantin;
 
-import dev.konstantin.dao.UserServiceDaoImpl;
 import dev.konstantin.entity.UserInfo;
 import dev.konstantin.exceptions.IncorrectUserInfoException;
-import dev.konstantin.dao.InMemoryUserServiceDao;
-//import org.junit.Assert;
-//import org.junit.Test;
+import dev.konstantin.repository.InMemoryUserRepository;
+import dev.konstantin.service.UserServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
 
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class UserServiceDaoTest {
+//import org.junit.Test;
 
-  private  UserServiceDaoImpl userServiceDaoImpl = new UserServiceDaoImpl(new InMemoryUserServiceDao());
+public class UserServiceTest {
 
+  private UserServiceImpl userServiceImpl = new UserServiceImpl(new InMemoryUserRepository());
 
   private static Stream<Arguments> provideToStringsForSaveUserTest() {
     return Stream.of(
@@ -40,12 +37,9 @@ public class UserServiceDaoTest {
   @ParameterizedTest
   @MethodSource("provideToStringsForSaveUserTest")
   public void saveUserTest(String pesel, String name, String lastname, String email) {
-    userServiceDaoImpl.saveUser(pesel, name, lastname, email);
+    userServiceImpl.saveUser(pesel, name, lastname, email);
 
-    UserInfo userInfo = userServiceDaoImpl.findByPesel(pesel);
-
-    Assertions.assertEquals(userInfo.getEmail(), email);
-    //Assert.assertEquals(10, userServiceDAO.getSize());
+    UserInfo userInfo = userServiceImpl.findUserByPesel(pesel);
 
     Assertions.assertEquals(pesel, userInfo.getPesel());
     Assertions.assertEquals(name, userInfo.getName());
@@ -84,11 +78,11 @@ public class UserServiceDaoTest {
   void runWhenStringContainsNotAlphabetic(String pesel, String name, String surname, String email) {
     assertThatThrownBy(
             () -> {
-              userServiceDaoImpl.saveUser(pesel, name, surname, email);
+              userServiceImpl.saveUser(pesel, name, surname, email);
             })
         .isInstanceOf(IncorrectUserInfoException.class)
         .hasMessageContaining(
-            "Name or surname contains another symbols. Please, enter only letters!");
+            "Name or lastname contains another symbols. Please, enter only letters!");
   }
 
   private static Stream<Arguments> provideStringsToRunWhenEmailIsIncorrect() {
@@ -110,25 +104,34 @@ public class UserServiceDaoTest {
   void runWhenEmailIsIncorrect(String pesel, String name, String surname, String email) {
     assertThatThrownBy(
             () -> {
-              userServiceDaoImpl.saveUser(pesel, name, surname, email);
+              userServiceImpl.saveUser(pesel, name, surname, email);
             })
         .isInstanceOf(IncorrectUserInfoException.class)
-        .hasMessageContaining("Email is invalid. try again");
+        .hasMessageContaining("Email is invalid. Try again");
   }
 
   @Test
-  public void getUserByIdTest() {
-    userServiceDaoImpl.saveUser("89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com");
-    UserInfo userInfo = userServiceDaoImpl.findByPesel("89112275656");
+  void getUserByIdTest() {
+    userServiceImpl.saveUser("89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com");
+    UserInfo userInfo = userServiceImpl.findUserByPesel("89112275656");
     Assertions.assertEquals("Kazimierz", userInfo.getName());
     Assertions.assertEquals("89112275656", userInfo.getPesel());
     Assertions.assertEquals("Kazimierz.Ostrowski@gmail.com", userInfo.getEmail());
   }
 
   @Test
-  public void getUserByEmailTest() {
-    userServiceDaoImpl.saveUser("89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com");
-    UserInfo userInfo = userServiceDaoImpl.findByEmail("Kazimierz.Ostrowski@gmail.com");
+  void addDublicatedUser() {
+    assertThatThrownBy(
+            () -> {
+              userServiceImpl.saveUser("89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com");
+              userServiceImpl.saveUser("89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com");
+            }).isInstanceOf(IncorrectUserInfoException.class).hasMessageContaining("User already exists");
+
+  }
+  @Test
+  void getUserByEmailTest() {
+    userServiceImpl.saveUser("89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com");
+    UserInfo userInfo = userServiceImpl.findUserByEmail("Kazimierz.Ostrowski@gmail.com");
     Assertions.assertEquals("Kazimierz", userInfo.getName());
     Assertions.assertEquals("89112275656", userInfo.getPesel());
     Assertions.assertEquals("Kazimierz.Ostrowski@gmail.com", userInfo.getEmail());
@@ -136,8 +139,8 @@ public class UserServiceDaoTest {
 
   @Test
   public void addUserTest() {
-    boolean isUserCreated = userServiceDaoImpl.saveUser("89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com");
-    Assertions.assertTrue(isUserCreated);
+    userServiceImpl.saveUser("89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com");
+    //Assertions.assertTrue(isUserCreated);
   }
 
   @org.junit.jupiter.api.Test
@@ -147,8 +150,8 @@ public class UserServiceDaoTest {
 
   @Test
   public void deleteUserTest() {
-    userServiceDaoImpl.saveUser("89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com");
-    boolean isUserDeleted = userServiceDaoImpl.deleteUser("89112275656");
-    Assertions.assertTrue(isUserDeleted);
+    userServiceImpl.saveUser("89112275656", "Kazimierz", "Ostrowski", "Kazimierz.Ostrowski@gmail.com");
+    userServiceImpl.deleteUser("89112275656");
+    //Assertions.assertTrue(isUserDeleted);
   }
 }

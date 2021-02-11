@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class InMemoryUserServiceDao implements UserRepository {
+public class InMemoryUserServiceDao {
 
   private ConcurrentHashMap<String, UserInfo> map = new ConcurrentHashMap<>();
 
@@ -49,24 +49,5 @@ public class InMemoryUserServiceDao implements UserRepository {
   public boolean deleteById(String pesel) {
     map.remove(pesel);
     return true;
-  }
-
-  @Override
-  public List<UserInfo> findAll() {
-    return null;
-  }
-
-  public int getSize() {
-    return map.size();
-  }
-
-  @Override
-  public String value() {
-    return null;
-  }
-
-  @Override
-  public Class<? extends Annotation> annotationType() {
-    return null;
   }
 }

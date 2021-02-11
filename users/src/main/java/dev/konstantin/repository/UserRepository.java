@@ -2,21 +2,26 @@ package dev.konstantin.repository;
 
 import dev.konstantin.entity.UserInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.Repository;
+// import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
-@Repository
-//public interface UserRepository extends JpaRepository<UserInfo, String> {
+// @Repository
+// public interface UserRepository extends JpaRepository<UserInfo, String> {
 public interface UserRepository extends Repository {
 
-  boolean save(UserInfo userInfo);
+  void save(UserInfo userInfo);
 
-  boolean deleteById(String pesel);
+  void deleteById(String id);
 
-  List<UserInfo> findAll();
+  UserInfo findById(String pesel);
 
   UserInfo findByEmail(String email);
 
-  UserInfo findByPesel(String pesel);
+  List<UserInfo> findAll();
+
+  boolean isUserExist(String pesel);
 }
